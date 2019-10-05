@@ -48,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
     EditText et_name;
     ProductDao productDao;
 
+    final int ID_ACTIVITY_NOTE_DETAILS = 1;
+    final int RESULT_OK = 1;
+    final int RESULT_DELETE = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +63,13 @@ public class MainActivity extends AppCompatActivity {
                 .roomModule(new RoomModule(getApplication()))
                 .build()
                 .getProductDao();
+
+//        FloatingActionButton fabButton = new FloatingActionButton.Builder(this)
+//                .withDrawable(R.drawable.ic_input_add)
+//                .withButtonColor(Color.WHITE)
+//                .withGravity(Gravity.BOTTOM | Gravity.RIGHT)
+//                .withMargins(0, 0, 16, 16)
+//                .create();
 
         //productDao = App.getInstance().getDataBase().productDao();
 
@@ -97,8 +108,10 @@ public class MainActivity extends AppCompatActivity {
         rv_products.setAdapter(adapter);
     }
 
-    @OnClick(R.id.btn_add_product)
+    @OnClick(R.id.floating_add_product)
     void addProduct(){
+
+
         String et_id_value = et_id.getText().toString();
         if (et_id_value.isEmpty()){
             Toast.makeText(this, "Value Id is empty!", Toast.LENGTH_SHORT).show();

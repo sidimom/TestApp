@@ -23,7 +23,7 @@ public class ProductAdapter extends PagedListAdapter<ProductRoom, ProductViewHol
     public ProductViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         Log.d("MY_TAG", "ProductViewHolder");
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.product, viewGroup, false);
+                .inflate(R.layout.product_item, viewGroup, false);
         ProductViewHolder holder = new ProductViewHolder(view);
         return holder;
     }

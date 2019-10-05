@@ -4,4 +4,6 @@
     <string name="btn_delete_product">Clear products</string>
     <string name="et_id_hint">Id</string>
     <string name="et_name_hint">Name</string>
+    <string name="et_description_hint">Description</string>
+    <string name="et_price_hint">Price</string>
 </resources>

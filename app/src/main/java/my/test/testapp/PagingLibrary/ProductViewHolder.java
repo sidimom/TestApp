@@ -26,6 +26,5 @@ public class ProductViewHolder extends RecyclerView.ViewHolder {
         Log.d("MY_TAG", "bind");
         tv_id.setText(product.id);
         tv_name.setText(product.name);
-        //switch_isTicked.setChecked(product.isTicked);
     }
 }
