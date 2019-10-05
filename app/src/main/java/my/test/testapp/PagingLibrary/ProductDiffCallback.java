@@ -2,16 +2,16 @@ package my.test.testapp.PagingLibrary;
 
 import android.support.v7.util.DiffUtil;
 
-import my.test.testapp.Product;
+import my.test.testapp.Room.ProductRoom;
 
-public class ProductDiffCallback extends DiffUtil.ItemCallback<Product> {
+public class ProductDiffCallback extends DiffUtil.ItemCallback<ProductRoom> {
     @Override
-    public boolean areItemsTheSame(Product product, Product t1) {
+    public boolean areItemsTheSame(ProductRoom product, ProductRoom t1) {
         return product.id == t1.id;
     }
 
     @Override
-    public boolean areContentsTheSame(Product product, Product t1) {
+    public boolean areContentsTheSame(ProductRoom product, ProductRoom t1) {
         return product == t1;
     }
 }

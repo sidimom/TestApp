@@ -12,7 +12,7 @@ import java.util.List;
 @Dao
 public interface ProductDao {
 
-    @Query("select * from productRoom")
+    @Query("select * from productRoom order by id")
     List<ProductRoom> getAll();
 
     @Query("select * from productRoom order by id")
