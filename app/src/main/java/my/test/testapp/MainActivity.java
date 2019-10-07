@@ -6,7 +6,9 @@ import android.arch.lifecycle.Observer;
 import android.arch.paging.DataSource;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
+import android.content.Intent;
 import android.graphics.Color;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -49,8 +51,6 @@ public class MainActivity extends AppCompatActivity {
     ProductDao productDao;
 
     final int ID_ACTIVITY_NOTE_DETAILS = 1;
-    final int RESULT_OK = 1;
-    final int RESULT_DELETE = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,11 +108,53 @@ public class MainActivity extends AppCompatActivity {
         rv_products.setAdapter(adapter);
     }
 
-    @OnClick(R.id.floating_add_product)
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == ID_ACTIVITY_NOTE_DETAILS){
+            if (data == null){
+                Toast.makeText(this, "Data of note is not received!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            ProductRoom product;
+            int productID = data.getIntExtra("ProductID", 0);
+            if (productID == 0){
+                product = new ProductRoom();
+                ProductRoom lastProduct = productDao.getMaxId();
+                if (lastProduct == null){
+                    product.id = 1;
+                }else{
+                    product.id = productDao.getMaxId().id;
+                }
+                product.name = data.getStringExtra("NameProduct");
+                product.description = data.getStringExtra("DescriptionProduct");
+                product.price = data.getIntExtra("PriceProduct", 0);
+                productDao.insertProduct(product);
+            }else{
+                product = productDao.getProductById(productID);
+                if (product == null){
+                    product = new ProductRoom();
+                    product.id = productID;
+                    product.name = data.getStringExtra("NameProduct");
+                    product.description = data.getStringExtra("DescriptionProduct");
+                    product.price = data.getIntExtra("PriceProduct", 0);
+                    productDao.insertProduct(product);
+                }else{
+                    productDao.updateProduct(product);
+                }
+            }
+
+            Toast.makeText(this, "Product " + product.name + " is created!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @OnClick(R.id.fab_add)
     void addProduct(){
 
+        Intent intent = new Intent(this, ProductActivity.class);
+        startActivityForResult(intent, ID_ACTIVITY_NOTE_DETAILS);
 
-        String et_id_value = et_id.getText().toString();
+        /*String et_id_value = et_id.getText().toString();
         if (et_id_value.isEmpty()){
             Toast.makeText(this, "Value Id is empty!", Toast.LENGTH_SHORT).show();
             return;
@@ -133,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
         }else{
             productDao.updateProduct(product);
         }
-        Toast.makeText(this, "Product " + et_name_value + " is created!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Product " + et_name_value + " is created!", Toast.LENGTH_SHORT).show();*/
     }
 
     @OnClick(R.id.btn_delete_product)

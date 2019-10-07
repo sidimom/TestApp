@@ -9,6 +9,8 @@ import android.arch.persistence.room.Update;
 
 import java.util.List;
 
+import my.test.testapp.Product;
+
 @Dao
 public interface ProductDao {
 
@@ -20,6 +22,9 @@ public interface ProductDao {
 
     @Query("select * from productRoom where id = :id")
     ProductRoom getProductById(long id);
+
+    @Query("SELECT * FROM productroom WHERE id = (SELECT MAX(id) from productroom)")
+    ProductRoom getMaxId();
 
     @Insert
     void insertProduct(ProductRoom productRoom);
