@@ -35,6 +35,11 @@ public class ProductActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         productID = intent.getIntExtra("ProductID", 0);
+        if (productID != 0){
+            et_name_product.setText(intent.getStringExtra("ProductName"));
+            et_description_product.setText(intent.getStringExtra("ProductDescription"));
+            et_price_product.setText(Long.toString(intent.getLongExtra("ProductPrice", 0)));
+        }
     }
 
     @OnClick(R.id.fab_apply)
