@@ -48,8 +48,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
         return products.size();
     }
 
-    public void refreshRecyclerView(ProductDao productDao) {
-        products = productDao.getAll();
+    public void refreshRecyclerView(List<ProductRoom> productList) {
+        products = productList;
         notifyDataSetChanged();
     }
 
@@ -76,7 +76,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
         }
 
         @OnClick
-        void onClick(View view){
+        void onClick(){
             onProductClickListener.onProductClick(products.get(getLayoutPosition()));
         }
 
