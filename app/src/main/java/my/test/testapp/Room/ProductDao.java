@@ -8,11 +8,13 @@ import android.arch.persistence.room.Update;
 
 import java.util.List;
 
+import io.reactivex.Flowable;
+
 @Dao
 public interface ProductDao {
 
     @Query("select * from productRoom order by id")
-    List<ProductRoom> getAll();
+    Flowable<List<ProductRoom>> getAll();
 
     @Query("select * from productRoom where id = :id")
     ProductRoom getProductById(long id);

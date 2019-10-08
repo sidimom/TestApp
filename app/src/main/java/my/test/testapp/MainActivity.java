@@ -8,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -42,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         intentResult = data;
         presenter.onActivityResult(requestCode);
-        presenter.viewIsReady();
+        //presenter.viewIsReady();
     }
 
     @OnClick(R.id.fab_add)
@@ -54,12 +56,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         rv_products.setLayoutManager(new LinearLayoutManager(this));
-        ProductAdapter.OnProductClickListener onProductClickListener = new ProductAdapter.OnProductClickListener() {
-            @Override
-            public void onProductClick(ProductRoom product) {
-                presenter.startProductActivity(product);
-            }
-        };
+        ProductAdapter.OnProductClickListener onProductClickListener = product -> presenter.startProductActivity(product);
         adapter = new ProductAdapter(onProductClickListener);
         rv_products.setAdapter(adapter);
 
@@ -68,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         presenter.viewIsReady();
     }
 
-  public void openProductActivity(ProductRoom product) {
+    public void openProductActivity(ProductRoom product) {
         Intent intent = new Intent(this, ProductActivity.class);
         intent.putExtra("ProductID", product.id);
         intent.putExtra("ProductName", product.name);
@@ -77,9 +74,8 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(intent, ID_ACTIVITY_PRODUCT);
     }
 
-
-    public void showProducts() {
-        adapter.refreshRecyclerView(presenter.getProducts());
+    public void setAdapter(List<ProductRoom> products) {
+        adapter.refreshRecyclerView(products);
     }
 
     public boolean isProductActivity(int requestCode) {

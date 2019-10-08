@@ -1,11 +1,10 @@
 package my.test.testapp.MVP;
 
-import java.util.List;
-
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import my.test.testapp.Dagger.AppModule;
 import my.test.testapp.Dagger.DaggerAppComponent;
 import my.test.testapp.Dagger.RoomModule;
-import my.test.testapp.MVP.ProductModel;import my.test.testapp.MainActivity;
+import my.test.testapp.MainActivity;
 import my.test.testapp.Room.ProductDao;
 import my.test.testapp.Room.ProductRoom;
 
@@ -35,9 +34,9 @@ public class ProductPresenter {
         view.openProductActivity(product);
     }
 
-    public List<ProductRoom> getProducts(){
+    /*public List<ProductRoom> getProducts(){
         return model.getAll();
-    }
+    }*/
 
     private ProductRoom addProduct(int productID){
         ProductRoom product = new ProductRoom();
@@ -53,7 +52,12 @@ public class ProductPresenter {
     }
 
     public void viewIsReady() {
-        view.showProducts();
+        //view.showProducts();
+        productDao.getAll()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(products -> {
+                    view.setAdapter(products);
+                });
     }
 
     public void onActivityResult(int requestCode) {

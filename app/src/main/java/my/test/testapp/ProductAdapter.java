@@ -15,16 +15,12 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnLongClick;
-import my.test.testapp.Room.ProductDao;
 import my.test.testapp.Room.ProductRoom;
-
-import static android.support.v4.app.ActivityCompat.startActivityForResult;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductHolder>{
 
     private List<ProductRoom> products = new ArrayList<>();
-    OnProductClickListener onProductClickListener;
+    private OnProductClickListener onProductClickListener;
 
     public ProductAdapter(OnProductClickListener _onProductClickListener){
         onProductClickListener = _onProductClickListener;

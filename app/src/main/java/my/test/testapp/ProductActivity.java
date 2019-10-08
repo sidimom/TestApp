@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -61,9 +61,9 @@ public class ProductActivity extends AppCompatActivity {
     }
 
     private boolean fieldsAreEmpty() {
-        if (et_name_product.getText().toString().isEmpty()
-            || et_description_product.getText().toString().isEmpty()
-            || et_price_product.getText().toString().isEmpty()){
+        if (TextUtils.isEmpty(et_name_product.getText())
+            || TextUtils.isEmpty(et_description_product.getText())
+            || TextUtils.isEmpty(et_price_product.getText())){
 
             Toast.makeText(this,"Values are empty!",Toast.LENGTH_SHORT).show();
             return true;

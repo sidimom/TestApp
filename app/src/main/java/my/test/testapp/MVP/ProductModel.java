@@ -2,6 +2,7 @@ package my.test.testapp.MVP;
 
 import java.util.List;
 
+import io.reactivex.Flowable;
 import my.test.testapp.Room.ProductDao;
 import my.test.testapp.Room.ProductRoom;
 
@@ -25,7 +26,7 @@ public class ProductModel {
         productDao.deleteProduct(product);
     }
 
-    public List<ProductRoom> getAll(){
+    public Flowable<List<ProductRoom>> getAll(){
         return productDao.getAll();
     }
 
