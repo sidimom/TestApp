@@ -1,9 +1,11 @@
 package my.test.testapp;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -11,6 +13,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import my.test.testapp.AdditionalClasses.DecimalDigitsInputFilter;
 
 public class ProductActivity extends AppCompatActivity {
 
@@ -26,19 +29,21 @@ public class ProductActivity extends AppCompatActivity {
     int productID;
     final int RESULT_OK = 1;
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.product);
 
         ButterKnife.bind(this);
+        et_price_product.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(12,2)});
 
         Intent intent = getIntent();
         productID = intent.getIntExtra("ProductID", 0);
         if (productID != 0){
             et_name_product.setText(intent.getStringExtra("ProductName"));
             et_description_product.setText(intent.getStringExtra("ProductDescription"));
-            et_price_product.setText(Long.toString(intent.getLongExtra("ProductPrice", 0)));
+            et_price_product.setText("" + intent.getFloatExtra("ProductPrice", (float) 0));
         }
     }
 
@@ -56,7 +61,7 @@ public class ProductActivity extends AppCompatActivity {
         intent.putExtra("ProductID", productID);
         intent.putExtra("NameProduct", et_name_product.getText().toString());
         intent.putExtra("DescriptionProduct", et_description_product.getText().toString());
-        intent.putExtra("PriceProduct", Integer.parseInt(et_price_product.getText().toString()));
+        intent.putExtra("PriceProduct", Float.valueOf((et_price_product.getText().toString())));
         setResult(RESULT_OK, intent);
     }
 

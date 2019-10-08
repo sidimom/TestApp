@@ -34,7 +34,7 @@
                 android:id="@+id/et_price_product"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"
+                android:inputType="numberDecimal"
                 android:hint="@string/et_price_hint" />
 
         </LinearLayout>

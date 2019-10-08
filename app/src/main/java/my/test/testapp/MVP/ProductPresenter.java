@@ -1,5 +1,9 @@
 package my.test.testapp.MVP;
 
+import android.annotation.SuppressLint;
+
+import java.util.List;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import my.test.testapp.Dagger.AppModule;
 import my.test.testapp.Dagger.DaggerAppComponent;
@@ -41,19 +45,24 @@ public class ProductPresenter {
     private ProductRoom addProduct(int productID){
         ProductRoom product = new ProductRoom();
         product.id = getProductID(productID);
+        changeFieldsOfProduct(product);
+        return product;
+    }
+
+    private void changeFieldsOfProduct(ProductRoom product) {
         product.name = view.getStringExtra("NameProduct");
         product.description = view.getStringExtra("DescriptionProduct");
-        product.price = view.getIntExtra("PriceProduct");
-        return product;
+        product.price = view.getFloatExtra("PriceProduct");
     }
 
     private int getProductID(int productID){
         return ((productID == 0) ? model.getMaxID() : productID);
     }
 
+    @SuppressLint("CheckResult")
     public void viewIsReady() {
         //view.showProducts();
-        productDao.getAll()
+        model.getAllRX()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(products -> {
                     view.setAdapter(products);
@@ -72,8 +81,22 @@ public class ProductPresenter {
             if (product == null){
                 model.insertProduct(addProduct(productID));
             }else{
+                changeFieldsOfProduct(product);
                 model.updateProduct(product);
             }
         }
+    }
+
+    public void checkAllProducts(boolean checked) {
+        List<ProductRoom> products = model.getAll();
+        for (ProductRoom product : products) {
+            product.isBought = checked;
+        }
+        model.updateProducts(products);
+    }
+
+    public void  checkProduct(ProductRoom product, boolean checked){
+        product.isBought = checked;
+        model.updateProduct(product);
     }
 }

@@ -1,12 +1,13 @@
 package my.test.testapp;
 
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import my.test.testapp.Room.ProductRoom;
 
@@ -21,9 +23,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
 
     private List<ProductRoom> products = new ArrayList<>();
     private OnProductClickListener onProductClickListener;
+    private OnSwitchClickListener onSwitchClickListener;
 
-    public ProductAdapter(OnProductClickListener _onProductClickListener){
+    public ProductAdapter(OnProductClickListener _onProductClickListener, OnSwitchClickListener _onSwitchClickListener){
         onProductClickListener = _onProductClickListener;
+        onSwitchClickListener = _onSwitchClickListener;
     }
 
     @NonNull
@@ -60,15 +64,20 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
         @BindView(R.id.tv_price)
         TextView tv_price;
 
+        @BindView(R.id.switch_isTicked)
+        Switch switch_isTicked;
+
         public ProductHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
+        @SuppressLint("SetTextI18n")
         public void bind(ProductRoom product){
             tv_name.setText(product.name);
             tv_description.setText(product.description);
-            tv_price.setText(Long.toString(product.price));
+            tv_price.setText("" + product.price);
+            switch_isTicked.setChecked(product.isBought);
         }
 
         @OnClick
@@ -76,6 +85,15 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
             onProductClickListener.onProductClick(products.get(getLayoutPosition()));
         }
 
+        @OnCheckedChanged(R.id.switch_isTicked)
+        void onSwitch(CompoundButton button, boolean checked) {
+            onSwitchClickListener.onSwitchClick(products.get(getLayoutPosition()), checked);
+        }
+
+    }
+
+    public interface OnSwitchClickListener{
+        void onSwitchClick(ProductRoom product, boolean checked);
     }
 
     public interface OnProductClickListener{

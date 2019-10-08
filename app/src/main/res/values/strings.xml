@@ -6,4 +6,5 @@
     <string name="et_name_hint">Name</string>
     <string name="et_description_hint">Description</string>
     <string name="et_price_hint">Price</string>
+    <string name="btn_swt_all_text">Buy all</string>
 </resources>

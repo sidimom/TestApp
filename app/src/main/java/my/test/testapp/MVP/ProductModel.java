@@ -22,13 +22,19 @@ public class ProductModel {
         productDao.updateProduct(product);
     }
 
+    public void updateProducts(List<ProductRoom> products){
+        productDao.updateProducts(products);
+    }
+
     public void deleteProduct(ProductRoom product){
         productDao.deleteProduct(product);
     }
 
-    public Flowable<List<ProductRoom>> getAll(){
-        return productDao.getAll();
+    public Flowable<List<ProductRoom>> getAllRX(){
+        return productDao.getAllRX();
     }
+
+
 
     public int getMaxID() {
         ProductRoom lastProduct = productDao.getMaxId();
@@ -42,4 +48,10 @@ public class ProductModel {
     public ProductRoom getProductById(int productID) {
         return productDao.getProductById(productID);
     }
+
+    public List<ProductRoom> getAll() {
+        return productDao.getAll();
+    }
+
+
 }

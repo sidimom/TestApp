@@ -11,5 +11,6 @@ public class ProductRoom {
 
     public String name;
     public String description;
-    public long price;
+    public float price;
+    public boolean isBought;
 }

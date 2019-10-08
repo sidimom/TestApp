@@ -14,7 +14,10 @@ import io.reactivex.Flowable;
 public interface ProductDao {
 
     @Query("select * from productRoom order by id")
-    Flowable<List<ProductRoom>> getAll();
+    Flowable<List<ProductRoom>> getAllRX();
+
+    @Query("select * from productRoom order by id")
+    List<ProductRoom> getAll();
 
     @Query("select * from productRoom where id = :id")
     ProductRoom getProductById(long id);
@@ -30,4 +33,7 @@ public interface ProductDao {
 
     @Update
     void updateProduct(ProductRoom productRoom);
+
+    @Update
+    void updateProducts(List<ProductRoom> products);
 }

@@ -6,12 +6,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import my.test.testapp.MVP.ProductPresenter;
 import my.test.testapp.Room.ProductRoom;
@@ -44,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         intentResult = data;
         presenter.onActivityResult(requestCode);
-        //presenter.viewIsReady();
     }
 
     @OnClick(R.id.fab_add)
@@ -52,12 +53,22 @@ public class MainActivity extends AppCompatActivity {
         presenter.startProductActivity(new ProductRoom());
     }
 
+    @OnCheckedChanged(R.id.swt_all)
+    void onSwitchAll(CompoundButton button, boolean checked){
+        presenter.checkAllProducts(checked);
+    }
+
     private void init() {
         ButterKnife.bind(this);
 
         rv_products.setLayoutManager(new LinearLayoutManager(this));
         ProductAdapter.OnProductClickListener onProductClickListener = product -> presenter.startProductActivity(product);
-        adapter = new ProductAdapter(onProductClickListener);
+        ProductAdapter.OnSwitchClickListener onSwitchClickListener = (product, checked) -> {
+            if (product.isBought != checked){
+                presenter.checkProduct(product, checked);
+            }
+        };
+        adapter = new ProductAdapter(onProductClickListener, onSwitchClickListener);
         rv_products.setAdapter(adapter);
 
         presenter = new ProductPresenter();
@@ -98,25 +109,8 @@ public class MainActivity extends AppCompatActivity {
         return intentResult.getStringExtra(key);
     }
 
-    //@OnItemClick
-
-//    @OnClick(R.id.btn_delete_product)
-//    void deleteProduct(){
-//        String et_id_value = et_id.getText().toString();
-//        if (et_id_value.isEmpty()){
-//            Toast.makeText(this, "Value Id is empty!", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//        int id_value = Integer.parseInt(et_id_value);
-//        ProductRoom product = productDao.getProductById(id_value);
-//
-//        if (product == null){
-//            Toast.makeText(this, "Product with id " + id_value + " is not founded!", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//        productDao.deleteProduct(product);
-//        Toast.makeText(this, "Product with id " + id_value + " is deleted!", Toast.LENGTH_SHORT).show();
-//    }
-
+    public float getFloatExtra(String key) {
+        return intentResult.getFloatExtra(key, (float) 0);
+    }
 }
 
