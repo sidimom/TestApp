@@ -74,10 +74,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductH
 
         @SuppressLint("SetTextI18n")
         public void bind(ProductRoom product){
-            tv_name.setText(product.name);
-            tv_description.setText(product.description);
-            tv_price.setText("" + product.price);
-            switch_isTicked.setChecked(product.isBought);
+            tv_name.setText(product.getName());
+            tv_description.setText(product.getDescription());
+            tv_price.setText("" + product.getPrice());
+            switch_isTicked.setChecked(product.isBought());
         }
 
         @OnClick

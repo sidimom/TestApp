@@ -1,8 +1,16 @@
 package my.test.testapp.MVP;
 
+import android.annotation.SuppressLint;
+import android.util.Log;
+
 import java.util.List;
 
-import io.reactivex.Flowable;
+import io.reactivex.Completable;
+import io.reactivex.CompletableObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import my.test.testapp.DatabaseCallback;
 import my.test.testapp.Room.ProductDao;
 import my.test.testapp.Room.ProductRoom;
 
@@ -14,34 +22,85 @@ public class ProductModel {
         productDao = _productDao;
     }
 
-    public void insertProduct(ProductRoom product){
-        productDao.insertProduct(product);
+    public void insertProduct(final DatabaseCallback databaseCallback, ProductRoom product){
+        Log.d("My_TAG", "Model: insertProduct");
+        Completable.fromAction(() -> productDao.insertProduct(product))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        databaseCallback.onProductAdded(product);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        databaseCallback.onDataNotAvailable(e.toString());
+                    }});
+
     }
 
-    public void updateProduct(ProductRoom product){
-        productDao.updateProduct(product);
+    public void updateProduct(final DatabaseCallback databaseCallback, ProductRoom product){
+        Completable.fromAction(() -> productDao.updateProduct(product))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        databaseCallback.onProductUpdated(product);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        databaseCallback.onDataNotAvailable(e.toString());
+                    }});
     }
 
-    public void updateProducts(List<ProductRoom> products){
-        productDao.updateProducts(products);
+    public void deleteProduct(final DatabaseCallback databaseCallback, ProductRoom product){
+        Completable.fromAction(() -> productDao.deleteProduct(product))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        databaseCallback.onProductDeleted(product);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        databaseCallback.onDataNotAvailable(e.toString());
+                    }});
     }
 
-    public void deleteProduct(ProductRoom product){
-        productDao.deleteProduct(product);
+    @SuppressLint("CheckResult")
+    public void getAll(final DatabaseCallback databaseCallback){
+        Log.d("My_TAG", "Model: getAll");
+        productDao.getAllRX()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(products -> databaseCallback.onProductLoaded(products));
     }
-
-    public Flowable<List<ProductRoom>> getAllRX(){
-        return productDao.getAllRX();
-    }
-
-
 
     public int getMaxID() {
         ProductRoom lastProduct = productDao.getMaxId();
         if (lastProduct == null){
             return 1;
         }else{
-            return productDao.getMaxId().id + 1;
+            return productDao.getMaxId().getId() + 1;
         }
     }
 
@@ -49,9 +108,32 @@ public class ProductModel {
         return productDao.getProductById(productID);
     }
 
-    public List<ProductRoom> getAll() {
-        return productDao.getAll();
+    @SuppressLint("CheckResult")
+    public void checkAllProducts(final DatabaseCallback databaseCallback, boolean checked) {
+        Log.d("My_TAG", "Model: checkAllProducts");
+        Completable.fromAction(() -> {
+            List<ProductRoom> products = productDao.getAll();
+            for (ProductRoom product : products) {
+                product.setBought(checked);
+            }
+            productDao.updateProducts(products);
+        })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        databaseCallback.onDataNotAvailable(e.toString());
+                    }});
     }
-
-
 }

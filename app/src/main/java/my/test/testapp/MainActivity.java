@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         rv_products.setLayoutManager(new LinearLayoutManager(this));
         ProductAdapter.OnProductClickListener onProductClickListener = product -> presenter.startProductActivity(product);
         ProductAdapter.OnSwitchClickListener onSwitchClickListener = (product, checked) -> {
-            if (product.isBought != checked){
+            if (product.isBought() != checked){
                 presenter.checkProduct(product, checked);
             }
         };
@@ -78,10 +78,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void openProductActivity(ProductRoom product) {
         Intent intent = new Intent(this, ProductActivity.class);
-        intent.putExtra("ProductID", product.id);
-        intent.putExtra("ProductName", product.name);
-        intent.putExtra("ProductDescription", product.description);
-        intent.putExtra("ProductPrice", product.price);
+        intent.putExtra("ProductID", product.getId());
+        intent.putExtra("ProductName", product.getName());
+        intent.putExtra("ProductDescription", product.getDescription());
+        intent.putExtra("ProductPrice", product.getPrice());
         startActivityForResult(intent, ID_ACTIVITY_PRODUCT);
     }
 

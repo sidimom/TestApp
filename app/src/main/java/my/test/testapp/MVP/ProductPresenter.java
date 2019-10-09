@@ -1,18 +1,18 @@
 package my.test.testapp.MVP;
 
-import android.annotation.SuppressLint;
+import android.util.Log;
 
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import my.test.testapp.Dagger.AppModule;
 import my.test.testapp.Dagger.DaggerAppComponent;
 import my.test.testapp.Dagger.RoomModule;
+import my.test.testapp.DatabaseCallback;
 import my.test.testapp.MainActivity;
 import my.test.testapp.Room.ProductDao;
 import my.test.testapp.Room.ProductRoom;
 
-public class ProductPresenter {
+public class ProductPresenter implements DatabaseCallback {
 
     private MainActivity view;
     private ProductModel model;
@@ -38,35 +38,26 @@ public class ProductPresenter {
         view.openProductActivity(product);
     }
 
-    /*public List<ProductRoom> getProducts(){
-        return model.getAll();
-    }*/
-
     private ProductRoom addProduct(int productID){
         ProductRoom product = new ProductRoom();
-        product.id = getProductID(productID);
+        product.setId(getProductID(productID));
         changeFieldsOfProduct(product);
         return product;
     }
 
     private void changeFieldsOfProduct(ProductRoom product) {
-        product.name = view.getStringExtra("NameProduct");
-        product.description = view.getStringExtra("DescriptionProduct");
-        product.price = view.getFloatExtra("PriceProduct");
+        product.setName(view.getStringExtra("NameProduct"));
+        product.setDescription(view.getStringExtra("DescriptionProduct"));
+        product.setPrice(view.getFloatExtra("PriceProduct"));
     }
 
     private int getProductID(int productID){
         return ((productID == 0) ? model.getMaxID() : productID);
     }
 
-    @SuppressLint("CheckResult")
     public void viewIsReady() {
-        //view.showProducts();
-        model.getAllRX()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(products -> {
-                    view.setAdapter(products);
-                });
+        Log.d("My_TAG", "Presenter: viewIsReady");
+        model.getAll(this);
     }
 
     public void onActivityResult(int requestCode) {
@@ -79,24 +70,45 @@ public class ProductPresenter {
             int productID = view.getIntExtra("ProductID");
             ProductRoom product = model.getProductById(productID);
             if (product == null){
-                model.insertProduct(addProduct(productID));
+                model.insertProduct(this, addProduct(productID));
             }else{
                 changeFieldsOfProduct(product);
-                model.updateProduct(product);
+                model.updateProduct(this, product);
             }
         }
     }
 
     public void checkAllProducts(boolean checked) {
-        List<ProductRoom> products = model.getAll();
-        for (ProductRoom product : products) {
-            product.isBought = checked;
-        }
-        model.updateProducts(products);
+        model.checkAllProducts(this, checked);
     }
 
     public void  checkProduct(ProductRoom product, boolean checked){
-        product.isBought = checked;
-        model.updateProduct(product);
+        product.setBought(checked);
+        model.updateProduct(this, product);
+    }
+
+    @Override
+    public void onProductLoaded(List<ProductRoom> products) {
+        view.setAdapter(products);
+    }
+
+    @Override
+    public void onProductDeleted(ProductRoom product) {
+        view.showToast("Product " + product.getName() + " is deleted");
+    }
+
+    @Override
+    public void onProductAdded(ProductRoom product) {
+        view.showToast("Product " + product.getName() + " is added");
+    }
+
+    @Override
+    public void onDataNotAvailable(String errorText) {
+        view.showToast("Error: " + errorText);
+    }
+
+    @Override
+    public void onProductUpdated(ProductRoom product) {
+        view.showToast("Product " + product.getName() + " is updated");
     }
 }
