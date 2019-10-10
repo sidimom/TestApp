@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 presenter.checkProduct(product, checked);
             }
         };
-        adapter = new ProductAdapter(onProductClickListener, onSwitchClickListener);
+        adapter = new ProductAdapter(this, onProductClickListener, onSwitchClickListener);
         rv_products.setAdapter(adapter);
 
         presenter = new ProductPresenter();
@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra(ProductActivity.EXTRA_PRODUCT_NAME, product.getName());
         intent.putExtra(ProductActivity.EXTRA_PRODUCT_DESCRIPTION, product.getDescription());
         intent.putExtra(ProductActivity.EXTRA_PRODUCT_PRICE, product.getPrice());
+        intent.putExtra(ProductActivity.EXTRA_PRODUCT_URL_IMAGE, product.getUrlImage());
         startActivityForResult(intent, ID_ACTIVITY_PRODUCT);
     }
 

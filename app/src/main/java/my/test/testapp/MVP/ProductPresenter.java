@@ -1,13 +1,13 @@
 package my.test.testapp.MVP;
 
-import android.util.Log;
+//import android.util.Log;
 
 import java.util.List;
 
 import my.test.testapp.Dagger.AppModule;
 import my.test.testapp.Dagger.DaggerAppComponent;
 import my.test.testapp.Dagger.RoomModule;
-import my.test.testapp.DatabaseCallback;
+import my.test.testapp.AdditionalClasses.DatabaseCallback;
 import my.test.testapp.MainActivity;
 import my.test.testapp.ProductActivity;
 import my.test.testapp.Room.ProductDao;
@@ -50,6 +50,7 @@ public class ProductPresenter implements DatabaseCallback {
         product.setName(view.getStringExtra(ProductActivity.EXTRA_PRODUCT_NAME));
         product.setDescription(view.getStringExtra(ProductActivity.EXTRA_PRODUCT_DESCRIPTION));
         product.setPrice(view.getFloatExtra(ProductActivity.EXTRA_PRODUCT_PRICE));
+        product.setUrlImage(view.getStringExtra(ProductActivity.EXTRA_PRODUCT_URL_IMAGE));
     }
 
     private int getProductID(int productID){
@@ -57,7 +58,6 @@ public class ProductPresenter implements DatabaseCallback {
     }
 
     public void viewIsReady() {
-        Log.d("My_TAG", "Presenter: viewIsReady");
         model.getAll(this);
     }
 

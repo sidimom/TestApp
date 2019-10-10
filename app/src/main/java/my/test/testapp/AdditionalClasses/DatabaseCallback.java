@@ -1,4 +1,4 @@
-package my.test.testapp;
+package my.test.testapp.AdditionalClasses;
 
 import java.util.List;
 

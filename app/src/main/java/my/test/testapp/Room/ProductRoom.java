@@ -13,6 +13,7 @@ public class ProductRoom {
     private String description;
     private float price;
     private boolean isBought;
+    private String urlImage;
 
     public int getId() {
         return id;
@@ -52,5 +53,13 @@ public class ProductRoom {
 
     public void setBought(boolean bought) {
         isBought = bought;
+    }
+
+    public String getUrlImage() {
+        return urlImage;
+    }
+
+    public void setUrlImage(String urlImage) {
+        this.urlImage = urlImage;
     }
 }
