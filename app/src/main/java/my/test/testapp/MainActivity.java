@@ -78,10 +78,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void openProductActivity(ProductRoom product) {
         Intent intent = new Intent(this, ProductActivity.class);
-        intent.putExtra("ProductID", product.getId());
-        intent.putExtra("ProductName", product.getName());
-        intent.putExtra("ProductDescription", product.getDescription());
-        intent.putExtra("ProductPrice", product.getPrice());
+        intent.putExtra(ProductActivity.EXTRA_PRODUCT_ID, product.getId());
+        intent.putExtra(ProductActivity.EXTRA_PRODUCT_NAME, product.getName());
+        intent.putExtra(ProductActivity.EXTRA_PRODUCT_DESCRIPTION, product.getDescription());
+        intent.putExtra(ProductActivity.EXTRA_PRODUCT_PRICE, product.getPrice());
         startActivityForResult(intent, ID_ACTIVITY_PRODUCT);
     }
 

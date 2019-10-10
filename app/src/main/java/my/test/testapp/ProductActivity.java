@@ -28,6 +28,10 @@ public class ProductActivity extends AppCompatActivity {
 
     int productID;
     final int RESULT_OK = 1;
+    public static final String EXTRA_PRODUCT_NAME = "ProductName";
+    public static final String EXTRA_PRODUCT_DESCRIPTION = "ProductDescription";
+    public static final String EXTRA_PRODUCT_PRICE = "ProductPrice";
+    public static final String EXTRA_PRODUCT_ID = "ProductID";
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -39,11 +43,11 @@ public class ProductActivity extends AppCompatActivity {
         et_price_product.setFilters(new InputFilter[]{new DecimalDigitsInputFilter(12,2)});
 
         Intent intent = getIntent();
-        productID = intent.getIntExtra("ProductID", 0);
+        productID = intent.getIntExtra(EXTRA_PRODUCT_ID, 0);
         if (productID != 0){
-            et_name_product.setText(intent.getStringExtra("ProductName"));
-            et_description_product.setText(intent.getStringExtra("ProductDescription"));
-            et_price_product.setText("" + intent.getFloatExtra("ProductPrice", (float) 0));
+            et_name_product.setText(intent.getStringExtra(EXTRA_PRODUCT_NAME));
+            et_description_product.setText(intent.getStringExtra(EXTRA_PRODUCT_DESCRIPTION));
+            et_price_product.setText("" + intent.getFloatExtra(EXTRA_PRODUCT_PRICE, (float) 0));
         }
     }
 
@@ -58,10 +62,10 @@ public class ProductActivity extends AppCompatActivity {
     private void setIntentResult() {
 
         Intent intent = new Intent();
-        intent.putExtra("ProductID", productID);
-        intent.putExtra("NameProduct", et_name_product.getText().toString());
-        intent.putExtra("DescriptionProduct", et_description_product.getText().toString());
-        intent.putExtra("PriceProduct", Float.valueOf((et_price_product.getText().toString())));
+        intent.putExtra(EXTRA_PRODUCT_ID, productID);
+        intent.putExtra(EXTRA_PRODUCT_NAME, et_name_product.getText().toString());
+        intent.putExtra(EXTRA_PRODUCT_DESCRIPTION, et_description_product.getText().toString());
+        intent.putExtra(EXTRA_PRODUCT_PRICE, Float.valueOf((et_price_product.getText().toString())));
         setResult(RESULT_OK, intent);
     }
 

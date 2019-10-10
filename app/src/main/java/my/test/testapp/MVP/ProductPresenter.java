@@ -9,6 +9,7 @@ import my.test.testapp.Dagger.DaggerAppComponent;
 import my.test.testapp.Dagger.RoomModule;
 import my.test.testapp.DatabaseCallback;
 import my.test.testapp.MainActivity;
+import my.test.testapp.ProductActivity;
 import my.test.testapp.Room.ProductDao;
 import my.test.testapp.Room.ProductRoom;
 
@@ -46,9 +47,9 @@ public class ProductPresenter implements DatabaseCallback {
     }
 
     private void changeFieldsOfProduct(ProductRoom product) {
-        product.setName(view.getStringExtra("NameProduct"));
-        product.setDescription(view.getStringExtra("DescriptionProduct"));
-        product.setPrice(view.getFloatExtra("PriceProduct"));
+        product.setName(view.getStringExtra(ProductActivity.EXTRA_PRODUCT_NAME));
+        product.setDescription(view.getStringExtra(ProductActivity.EXTRA_PRODUCT_DESCRIPTION));
+        product.setPrice(view.getFloatExtra(ProductActivity.EXTRA_PRODUCT_PRICE));
     }
 
     private int getProductID(int productID){
@@ -67,7 +68,7 @@ public class ProductPresenter implements DatabaseCallback {
                 return;
             }
 
-            int productID = view.getIntExtra("ProductID");
+            int productID = view.getIntExtra(ProductActivity.EXTRA_PRODUCT_ID);
             ProductRoom product = model.getProductById(productID);
             if (product == null){
                 model.insertProduct(this, addProduct(productID));
