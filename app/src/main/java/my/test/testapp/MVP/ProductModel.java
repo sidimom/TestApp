@@ -9,6 +9,7 @@ import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import my.test.testapp.AdditionalClasses.DatabaseCallback;
 import my.test.testapp.Room.ProductDao;
@@ -109,10 +110,12 @@ public class ProductModel {
     }
 
     @SuppressLint("CheckResult")
-    public void checkAllProducts(final DatabaseCallback databaseCallback, boolean checked) {
+    public void checkAllProducts(final DatabaseCallback databaseCallback, boolean checked, String searchString) {
         Log.d("My_TAG", "Model: checkAllProducts");
         Completable.fromAction(() -> {
-            List<ProductRoom> products = productDao.getAll();
+            //проставляем только тем продуктам, по которым сработал отбор
+            //List<ProductRoom> products = productDao.getAll();
+            List<ProductRoom> products = productDao.getAllWithSearch(searchString);
             for (ProductRoom product : products) {
                 product.setBought(checked);
             }
@@ -128,12 +131,17 @@ public class ProductModel {
 
                     @Override
                     public void onComplete() {
-
+                        databaseCallback.onProductsUpdated();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         databaseCallback.onDataNotAvailable(e.toString());
                     }});
+    }
+
+    @SuppressLint("CheckResult")
+    public List<ProductRoom> getAllWithSearch(String searchString) {
+        return productDao.getAllWithSearch(searchString);
     }
 }

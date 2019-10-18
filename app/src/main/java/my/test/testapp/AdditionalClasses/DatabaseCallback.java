@@ -15,4 +15,6 @@ public interface DatabaseCallback {
     void onDataNotAvailable(String errorText);
 
     void onProductUpdated(ProductRoom product);
+
+    void onProductsUpdated();
 }

@@ -80,7 +80,8 @@ public class ProductPresenter implements DatabaseCallback {
     }
 
     public void checkAllProducts(boolean checked) {
-        model.checkAllProducts(this, checked);
+        String searchString = view.getSearch();
+        model.checkAllProducts(this, checked, searchString);
     }
 
     public void  checkProduct(ProductRoom product, boolean checked){
@@ -95,11 +96,13 @@ public class ProductPresenter implements DatabaseCallback {
 
     @Override
     public void onProductDeleted(ProductRoom product) {
+        setSearch();
         view.showToast("Product " + product.getName() + " is deleted");
     }
 
     @Override
     public void onProductAdded(ProductRoom product) {
+        setSearch();
         view.showToast("Product " + product.getName() + " is added");
     }
 
@@ -110,6 +113,18 @@ public class ProductPresenter implements DatabaseCallback {
 
     @Override
     public void onProductUpdated(ProductRoom product) {
+        setSearch();
         view.showToast("Product " + product.getName() + " is updated");
+    }
+
+    @Override
+    public void onProductsUpdated() {
+        setSearch();
+    }
+
+    public void setSearch() {
+        String searchString = view.getSearch();
+        List<ProductRoom> products = model.getAllWithSearch(searchString);
+        view.setAdapter(products);
     }
 }

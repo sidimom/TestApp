@@ -1,5 +1,6 @@
 package my.test.testapp;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -7,14 +8,27 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.jakewharton.rxbinding3.widget.RxTextView;
+import com.jakewharton.rxbinding3.widget.TextViewAfterTextChangeEvent;
+import com.jakewharton.rxbinding3.widget.TextViewTextChangeEvent;
+
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import io.reactivex.ObservableSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.functions.Predicate;
+import io.reactivex.schedulers.Schedulers;
 import my.test.testapp.MVP.ProductPresenter;
 import my.test.testapp.Room.ProductRoom;
 
@@ -22,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.rv_products)
     RecyclerView rv_products;
+
+    @BindView(R.id.et_search)
+    EditText et_search;
 
     ProductPresenter presenter;
     ProductAdapter adapter;
@@ -58,13 +75,14 @@ public class MainActivity extends AppCompatActivity {
         presenter.checkAllProducts(checked);
     }
 
+    @SuppressLint("CheckResult")
     private void init() {
         ButterKnife.bind(this);
 
         rv_products.setLayoutManager(new LinearLayoutManager(this));
         ProductAdapter.OnProductClickListener onProductClickListener = product -> presenter.startProductActivity(product);
         ProductAdapter.OnSwitchClickListener onSwitchClickListener = (product, checked) -> {
-            if (product.isBought() != checked){
+            if (product.isBought() != checked) {
                 presenter.checkProduct(product, checked);
             }
         };
@@ -73,7 +91,16 @@ public class MainActivity extends AppCompatActivity {
 
         presenter = new ProductPresenter();
         presenter.attachView(this);
-        presenter.viewIsReady();
+        //убрал, т.к. добавил отображение списка с поиском
+        //presenter.viewIsReady();
+        presenter.setSearch();
+
+        RxTextView.textChangeEvents(et_search)
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> presenter.setSearch());
+
     }
 
     public void openProductActivity(ProductRoom product) {
@@ -112,6 +139,10 @@ public class MainActivity extends AppCompatActivity {
 
     public float getFloatExtra(String key) {
         return intentResult.getFloatExtra(key, (float) 0);
+    }
+
+    public String getSearch() {
+        return "%" + et_search.getText().toString() + "%";
     }
 }
 

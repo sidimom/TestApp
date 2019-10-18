@@ -20,10 +20,13 @@ public interface ProductDao {
     List<ProductRoom> getAll();
 
     @Query("select * from productRoom where id = :id")
-    ProductRoom getProductById(long id);
+    ProductRoom getProductById(int id);
 
     @Query("SELECT * FROM productroom WHERE id = (SELECT MAX(id) from productroom)")
     ProductRoom getMaxId();
+
+    @Query("SELECT * FROM productroom WHERE name LIKE :searchString order by id")
+    List<ProductRoom> getAllWithSearch(String searchString);
 
     @Insert
     void insertProduct(ProductRoom productRoom);
